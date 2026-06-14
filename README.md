@@ -138,16 +138,6 @@ The current version is intentionally built in a safe professional way:
 - OpenAI is the primary provider for text and image generation.
 - It is suitable for classroom demonstration and future expansion.
 
-## Screenshots
-
-### Main Interface
-
-![Main Interface](docs/screenshots/main-ui.png)
-
-### Generated Study Cards
-
-![Generated Study Cards](docs/screenshots/study-cards.png)
-
 ## Documentation
 
 See:
