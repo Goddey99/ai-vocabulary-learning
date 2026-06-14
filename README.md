@@ -2,7 +2,7 @@
 
 This project uses AI services to help learners memorize vocabulary when learning a new language.
 
-The prototype uses French as the demonstration language, but the system is designed to support other languages.
+The system supports French, English, Spanish, and German, with French used as the primary demonstration language.
 
 ## Core Idea
 
@@ -13,6 +13,10 @@ word → sentence → audio → image
 ```
 
 This helps the learner remember vocabulary through reading, listening, and visual memory.
+
+## System Flow
+
+User Input → Vocabulary Loader → Sentence Generator → Audio Generator → Image Generator → Study Cards UI
 
 ## Features
 
@@ -27,6 +31,18 @@ This helps the learner remember vocabulary through reading, listening, and visua
 - Generate an audio file placeholder for each sentence
 - Generate an image prompt file for each sentence
 - Display results as study cards
+
+## Project Structure
+
+```text
+app/        # Flask routes, templates, and services
+data/       # Vocabulary frequency CSV files
+docs/       # Documentation and screenshots
+generated/  # Generated audio and images
+tests/      # Unit tests
+scripts/    # Helper scripts
+instance/   # Local runtime data
+```
 
 ## Technology Stack
 
@@ -117,10 +133,20 @@ If OpenAI fails, the app automatically falls back to local mock sentence generat
 ## Important Notes
 
 The current version is intentionally built in a safe professional way:
-- It works without paid API keys.
+- It supports both real AI providers and fallback local generation for development.
 - It has a clean service-based design.
 - OpenAI is the primary provider for text and image generation.
 - It is suitable for classroom demonstration and future expansion.
+
+## Screenshots
+
+### Main Interface
+
+![Main Interface](docs/screenshots/main-ui.png)
+
+### Generated Study Cards
+
+![Generated Study Cards](docs/screenshots/study-cards.png)
 
 ## Documentation
 
