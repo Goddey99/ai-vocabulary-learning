@@ -28,8 +28,8 @@ User Input → Vocabulary Loader → Sentence Generator → Audio Generator → 
   - allowed vocabulary range
   - image style
 - Generate beginner-level learning sentences
-- Generate an audio file placeholder for each sentence
-- Generate an image prompt file for each sentence
+- Generate pronunciation audio for each sentence
+- Generate contextual illustrative images for each sentence
 - Display results as study cards
 
 ## Project Structure
