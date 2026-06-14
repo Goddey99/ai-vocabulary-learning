@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>
+        AI Vocabulary Learning Tool
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <header>
+
+        <h1>
+            AI-Based Vocabulary Memorization Tool
+        </h1>
+
+        <p>
+            Learn vocabulary using sentences, sound, and images.
+        </p>
+
+    </header>
+
+    <!-- AI STATUS NOTE -->
+
+    <div class="demo-note" role="note">
+
+        {% if ai_enabled %}
+        AI-powered vocabulary generation active.
+        {% else %}
+        Demo mode is enabled locally.
+        {% endif %}
+
+    </div>
+
+    <!-- INPUT FORM: collects generation settings and posts one request to the orchestration route. -->
+
+    <section class="panel">
+
+        <form
+            id="study-form"
+            method="POST"
+            action="{{ url_for('main.generate') }}"
+            data-loading-text="Generating study cards...">
+
+            <div class="form-grid form-grid-primary">
+
+                <!-- LANGUAGE -->
+
+                <label>
+
+                    Language
+
+                    <input
+                        type="text"
+                        name="language"
+                        value="{{ (form_values|default({})).get('language', 'French') }}">
+
+                </label>
+
+                <!-- TARGET WORDS -->
+
+                <label>
+
+                    Target Words
+
+                    <input
+                        type="number"
+                        name="target_words"
+                        value="{{ (form_values|default({})).get('target_words', 10) }}"
+                        min="1"
+                        max="100">
+
+                </label>
+
+                <!-- SENTENCES -->
+
+                <label>
+
+                    Sentences Per Word
+
+                    <input
+                        type="number"
+                        name="sentences_per_word"
+                        value="{{ (form_values|default({})).get('sentences_per_word', 2) }}"
+                        min="1"
+                        max="5">
+
+                </label>
+
+            </div>
+
+            <div class="form-grid form-grid-secondary">
+
+                <!-- CUSTOM WORD -->
+
+                <label>
+
+                    Custom Word (Optional)
+
+                    <input
+                        type="text"
+                        name="custom_word"
+                        value="{{ (form_values|default({})).get('custom_word', '') }}"
+                        placeholder="Example: school or livre">
+
+                </label>
+
+                <!-- VOCAB RANGE -->
+
+                <label>
+
+                    Allowed Vocabulary Range
+
+                    <input
+                        type="number"
+                        name="allowed_range"
+                        value="{{ (form_values|default({})).get('allowed_range', 50) }}"
+                        min="10"
+                        max="500">
+
+                </label>
+
+                <!-- IMAGE STYLE -->
+
+                <label>
+
+                    Image Style
+
+                    <select name="image_style">
+
+                        <option value="cartoon" {% if (form_values|default({})).get('image_style', 'cartoon') == 'cartoon' %}selected{% endif %}>
+                            Cartoon
+                        </option>
+
+                        <option value="realistic" {% if (form_values|default({})).get('image_style', 'cartoon') == 'realistic' %}selected{% endif %}>
+                            Realistic
+                        </option>
+
+                        <option value="watercolor" {% if (form_values|default({})).get('image_style', 'cartoon') == 'watercolor' %}selected{% endif %}>
+                            Watercolor
+                        </option>
+
+                    </select>
+
+                </label>
+
+            </div>
+
+            <div class="form-actions">
+                <!-- LOADING STATE: spinner and label are toggled by main.js during long-running generation. -->
+                <button type="submit" class="submit-button">
+
+                    <span class="button-label">Generate Study Cards</span>
+                    <span class="button-spinner" aria-hidden="true"></span>
+
+                </button>
+
+                <p class="form-hint">
+                    Generates sentences, audio, and images in one pass.
+                </p>
+            </div>
+
+        </form>
+
+    </section>
+
+    <!-- STUDY CARD DISPLAY: renders generated cards only when backend returns result items. -->
+
+    {% if results %}
+
+    <section class="results">
+
+        <h2>
+            Generated Study Cards
+        </h2>
+
+        {% for item in results %}
+
+        <div class="card">
+
+            <h3>
+
+                {{ item.word }}
+
+                {% if item.meaning and should_show_translation(item.word, item.meaning) %}
+                <span class="card-meaning">
+                    {{ item.meaning }}
+                </span>
+                {% endif %}
+
+            </h3>
+
+            {% for sentence_item in item.sentences %}
+
+            <div class="sentence-box">
+
+                <!-- SENTENCE -->
+
+                <p class="sentence">
+
+                    {{ sentence_item.sentence }}
+
+                </p>
+
+                <!-- TRANSLATION RENDERING: hides redundant translations to reduce visual noise for learners. -->
+                {% if should_show_translation(sentence_item.sentence, sentence_item.translation) %}
+                <p class="translation">
+                    {{ sentence_item.translation }}
+                </p>
+                {% endif %}
+
+                <!-- MEDIA ROW -->
+
+                <div class="media-row">
+
+                    <!-- AUDIO RENDERING: each sentence links to a deterministic local audio asset path. -->
+
+                    <div class="media-panel media-panel-audio">
+
+                        <p class="asset-note">
+
+                            Audio
+
+                        </p>
+
+                        <audio
+                            controls
+                            preload="auto"
+                            src="{{ sentence_item.final_audio }}?v={{ range(1,999999)|random }}">
+
+                            Your browser does not support audio playback.
+
+                        </audio>
+
+                    </div>
+
+                    <!-- IMAGE RENDERING: conditionally shows generated media, disabled state, or fallback notice. -->
+
+                    {% if sentence_item.image_available %}
+                    <div class="media-panel media-panel-image">
+
+                        <p class="asset-note">
+
+                            Image
+
+                        </p>
+
+                        <div class="image-frame">
+                            <img
+                                class="generated-image"
+                                src="{{ sentence_item.image }}?v={{ range(1,999999)|random }}"
+                                alt="Generated learning image">
+                        </div>
+
+                    </div>
+                    {% elif not sentence_item.image_generation_enabled %}
+                    <p class="asset-link">Image disabled</p>
+                    {% else %}
+                    <p class="asset-link">Image unavailable</p>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endfor %}
+
+    </section>
+
+    {% endif %}
+
+</div>
+
+<script
+    src="{{ url_for('static', filename='js/main.js') }}">
+</script>
+
+</body>
+
+</html>

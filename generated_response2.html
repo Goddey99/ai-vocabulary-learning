@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Vocabulary Learning Tool</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>AI-Based Vocabulary Memorization Tool</h1>
+        <p>Learn vocabulary using sentences, sound, and images.</p>
+    </header>
+
+    <div class="demo-note" role="note">
+        Demo mode is enabled locally, so form submissions use fast placeholder content.
+    </div>
+
+    <section class="panel">
+        <form method="POST">
+            <div class="form-grid">
+                <label>
+                    Language
+                    <input type="text" name="language" value="French">
+                </label>
+
+                <label>
+                    Target Words
+                    <input type="number" name="target_words" value="10" min="1" max="100">
+                </label>
+
+                <label>
+                    Sentences Per Word
+                    <input type="number" name="sentences_per_word" value="2" min="1" max="5">
+                </label>
+
+                <label>
+                    Allowed Vocabulary Range
+                    <input type="number" name="allowed_range" value="50" min="10" max="500">
+                </label>
+
+                <label>
+                    Image Style
+                    <select name="image_style">
+                        <option value="cartoon">Cartoon</option>
+                        <option value="realistic">Realistic</option>
+                        <option value="watercolor">Watercolor</option>
+                    </select>
+                </label>
+            </div>
+
+            <button type="submit">Generate Learning Materials</button>
+        </form>
+    </section>
+
+    
+    <section class="results">
+        <h2>Generated Study Cards</h2>
+
+        
+        <div class="card">
+            <h3>je <span>I</span></h3>
+
+            
+            <div class="sentence-box">
+                <p class="sentence">Je suis un homme.</p>
+
+                <div class="media-row">
+                    <div>
+                        <p class="asset-note">Audio</p>
+                        <audio controls>
+                            <source src="/generated/audio/je_1.mp3" type="audio/mpeg">
+                            Your browser does not support audio playback.
+                        </audio>
+                    </div>
+
+                    <div>
+                        <p class="asset-note">Image</p>
+                        
+                            <img class="generated-image" src="/generated/images/je_1.png" alt="Generated learning image">
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sentence-box">
+                <p class="sentence">Je veux un chat.</p>
+
+                <div class="media-row">
+                    <div>
+                        <p class="asset-note">Audio</p>
+                        <audio controls>
+                            <source src="/generated/audio/je_2.mp3" type="audio/mpeg">
+                            Your browser does not support audio playback.
+                        </audio>
+                    </div>
+
+                    <div>
+                        <p class="asset-note">Image</p>
+                        
+                            <img class="generated-image" src="/generated/images/je_2.png" alt="Generated learning image">
+                        
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+    </section>
+    
+</div>
+
+</body>
+<script src="/static/js/main.js"></script>
+</html>
