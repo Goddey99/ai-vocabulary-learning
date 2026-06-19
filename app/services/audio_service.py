@@ -8,6 +8,7 @@ GTTS_LANGUAGE_CODES = {
     "english": "en",
     "spanish": "es",
     "german": "de",
+    "chinese": "zh-cn",
 }
 
 

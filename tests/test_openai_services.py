@@ -168,6 +168,16 @@ def test_generate_sentences_falls_back_safely_for_unsupported_provider(monkeypat
     assert any("livre" in item["sentence"].lower() for item in result)
 
 
+def test_generate_sentences_uses_chinese_local_fallback(monkeypatch, openai_enabled):
+    monkeypatch.setattr(Config, "AI_TEXT_PROVIDER", "unknown")
+
+    result = generate_sentences("Chinese", "书", [{"word": "书"}, {"word": "学校"}], count=2, custom_mode=False)
+
+    assert len(result) == 2
+    assert all("sentence" in item and "translation" in item for item in result)
+    assert any("书" in item["sentence"] for item in result)
+
+
 def test_generate_sentences_falls_back_when_openai_text_raises(monkeypatch, openai_enabled):
     monkeypatch.setattr(ai_service, "get_openai_client", lambda: (_ for _ in ()).throw(RuntimeError("boom")))
 
@@ -329,6 +339,32 @@ def test_generate_audio_file_uses_gtts_provider_route(monkeypatch, tmp_path):
     assert result_url == "/generated/audio/livre_1.mp3"
     assert saved_paths
     assert (tmp_path / "livre_1.mp3").exists()
+
+
+def test_generate_audio_file_maps_chinese_to_gtts_zh_cn(monkeypatch, tmp_path):
+    monkeypatch.setattr(Config, "AUDIO_PROVIDER", "gtts")
+    monkeypatch.setattr(Config, "USE_REAL_AUDIO", True)
+    monkeypatch.setattr(Config, "AUDIO_DIR", tmp_path)
+
+    captured = {}
+
+    class FakeTTS:
+        def __init__(self, text, lang, slow=False):
+            captured["text"] = text
+            captured["lang"] = lang
+            captured["slow"] = slow
+
+        def save(self, path):
+            Path(path).write_bytes(b"ID3\x00fake-mp3-data")
+
+    monkeypatch.setattr(audio_service, "gTTS", FakeTTS)
+
+    result_url = generate_audio_file("我喜欢这本书。", "书", 1, "Chinese")
+
+    assert result_url == "/generated/audio/书_1.mp3"
+    assert captured["lang"] == "zh-cn"
+    assert captured["text"] == "我喜欢这本书。"
+    assert (tmp_path / "书_1.mp3").exists()
 
 
 def test_generate_audio_file_returns_none_for_unsupported_provider(monkeypatch, tmp_path):

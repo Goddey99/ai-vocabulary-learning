@@ -33,7 +33,7 @@ def index():
     # Homepage initializes form defaults and communicates current feature-toggle status to the UI.
 
     form_values = {
-        "language": "French",
+        "language": Config.DEFAULT_LANGUAGE,
         "target_words": 10,
         "sentences_per_word": 2,
         "allowed_range": 50,
@@ -51,6 +51,7 @@ def index():
         image_enabled=Config.USE_REAL_IMAGES,
         ai_enabled=Config.USE_OPENAI,
         should_show_translation=should_show_translation,
+        supported_languages=Config.SUPPORTED_LANGUAGES,
     )
 
 
@@ -62,7 +63,7 @@ def generate():
 
     # Form extraction normalizes user input into a single configuration object for this request.
     form_values = {
-        "language": request.form.get("language", "French"),
+        "language": request.form.get("language", Config.DEFAULT_LANGUAGE),
         "target_words": int(request.form.get("target_words", 10)),
         "sentences_per_word": int(request.form.get("sentences_per_word", 2)),
         "allowed_range": int(request.form.get("allowed_range", 50)),
@@ -256,6 +257,7 @@ def generate():
         image_enabled=Config.USE_REAL_IMAGES,
         ai_enabled=Config.USE_OPENAI,
         should_show_translation=should_show_translation,
+        supported_languages=Config.SUPPORTED_LANGUAGES,
     )
 
 

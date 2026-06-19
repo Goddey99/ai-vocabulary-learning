@@ -243,6 +243,7 @@ def _build_openai_image_prompt(sentence, style="cartoon", language=None):
         "english": "English-language learning context with culturally appropriate details for English learners",
         "spanish": "Spanish-language learning context with culturally appropriate details for Spanish learners",
         "german": "German-language learning context with culturally appropriate details for German learners",
+        "chinese": "Chinese-language learning context with culturally appropriate details for Chinese learners",
     }
     selected_language = language_guidance.get(normalized_language, "language-learning context suitable for the selected vocabulary")
 

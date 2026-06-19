@@ -41,6 +41,7 @@ class Config:
     IMAGE_MODEL = os.getenv("IMAGE_MODEL", "gpt-image-1")
 
     DEFAULT_LANGUAGE = "French"
+    SUPPORTED_LANGUAGES = ("French", "English", "Spanish", "German", "Chinese")
     DEFAULT_TARGET_WORDS = 10
     DEFAULT_SENTENCES_PER_WORD = 2
     DEFAULT_ALLOWED_VOCABULARY_RANGE = 50

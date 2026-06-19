@@ -9,6 +9,7 @@ VOCABULARY_FILES = {
     "english": "english_frequency_words.csv",
     "spanish": "spanish_frequency_words.csv",
     "german": "german_frequency_words.csv",
+    "chinese": "chinese_frequency_words.csv",
 }
 
 STOPWORDS_BY_LANGUAGE = {
@@ -29,6 +30,10 @@ STOPWORDS_BY_LANGUAGE = {
         "où", "ici", "là", "cela", "ça", "ont", "a", "es", "sont", "été",
         "être", "faire", "fait", "font", "pouvoir", "peut", "doit", "devrait",
     },
+    "chinese": {
+        "的", "了", "在", "是", "我", "有", "和", "不", "你", "他", "她", "们",
+        "这", "那", "也", "就", "都", "很", "还", "与", "而", "从", "到", "给",
+    },
 }
 
 PREFERRED_WORDS_BY_LANGUAGE = {
@@ -46,6 +51,12 @@ PREFERRED_WORDS_BY_LANGUAGE = {
         "ecrire", "parler", "étudier", "etudier", "marcher", "aimer", "vivre", "heureux",
         "heureuse", "petit", "grande", "nouveau", "nouvelle", "bon", "bonne", "beau",
         "belle", "temps", "jour", "nuit", "chambre", "arbre", "parc", "simple",
+    },
+    "chinese": {
+        "学校", "老师", "学生", "朋友", "家", "书", "水", "狗", "饭", "城市",
+        "家庭", "花园", "音乐", "旅行", "工作", "学习", "生活", "孩子", "房间", "树",
+        "公园", "时间", "白天", "晚上", "阅读", "写", "说", "走", "爱", "吃",
+        "好", "小", "大", "新", "旧", "漂亮", "简单", "快乐",
     },
 }
 

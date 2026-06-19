@@ -1,6 +1,11 @@
 from app import create_app
 from app.config import Config
+from app.services.vocabulary_service import get_vocabulary_file
 import app.routes as routes
+
+
+def test_supported_languages_include_chinese():
+    assert "Chinese" in Config.SUPPORTED_LANGUAGES
 
 
 def test_stopwords_excluded_from_vocabulary_selection(monkeypatch):
@@ -173,3 +178,92 @@ def test_tiny_vocabulary_set_does_not_crash(monkeypatch):
 
     assert response.status_code == 200
     assert captured_words == ["house"]
+
+
+def test_chinese_vocabulary_file_is_registered():
+    assert get_vocabulary_file("Chinese").name == "chinese_frequency_words.csv"
+
+
+def test_chinese_stopwords_are_filtered_and_content_words_rank_higher(monkeypatch):
+    captured_words = []
+
+    monkeypatch.setattr(Config, "USE_OPENAI", False)
+    monkeypatch.setattr(
+        routes,
+        "load_vocabulary",
+        lambda language: [
+            {"word": "的", "meaning": "of"},
+            {"word": "书", "meaning": "book"},
+            {"word": "学校", "meaning": "school"},
+            {"word": "了", "meaning": "particle"},
+        ],
+    )
+
+    def fake_generate_sentences(**kwargs):
+        captured_words.append(kwargs["target_word"])
+        return [{"sentence": "我在读书。", "translation": "I am reading a book."}]
+
+    monkeypatch.setattr(routes, "generate_sentences", fake_generate_sentences)
+    monkeypatch.setattr(routes, "generate_audio_file", lambda *args, **kwargs: None)
+    monkeypatch.setattr(routes, "generate_image_file", lambda *args, **kwargs: {"success": False, "error": "disabled"})
+
+    app = create_app()
+    app.config.from_object(Config)
+    client = app.test_client()
+
+    response = client.post(
+        "/generate",
+        data={
+            "language": "Chinese",
+            "target_words": 2,
+            "sentences_per_word": 1,
+            "allowed_range": 50,
+            "image_style": "cartoon",
+            "custom_word": "",
+        },
+    )
+
+    assert response.status_code == 200
+    assert set(captured_words) == {"书", "学校"}
+    assert all(word not in {"的", "了"} for word in captured_words)
+
+
+def test_chinese_custom_word_mode_uses_the_requested_word(monkeypatch):
+    monkeypatch.setattr(Config, "USE_OPENAI", False)
+    monkeypatch.setattr(
+        routes,
+        "load_vocabulary",
+        lambda language: [
+            {"word": "学校", "meaning": "school"},
+            {"word": "书", "meaning": "book"},
+        ],
+    )
+
+    captured_words = []
+
+    def fake_generate_sentences(**kwargs):
+        captured_words.append(kwargs["target_word"])
+        return [{"sentence": "我在学校。", "translation": "I am at school."}]
+
+    monkeypatch.setattr(routes, "generate_sentences", fake_generate_sentences)
+    monkeypatch.setattr(routes, "generate_audio_file", lambda *args, **kwargs: None)
+    monkeypatch.setattr(routes, "generate_image_file", lambda *args, **kwargs: {"success": False, "error": "disabled"})
+
+    app = create_app()
+    app.config.from_object(Config)
+    client = app.test_client()
+
+    response = client.post(
+        "/generate",
+        data={
+            "language": "Chinese",
+            "target_words": 1,
+            "sentences_per_word": 1,
+            "allowed_range": 50,
+            "image_style": "cartoon",
+            "custom_word": "学校",
+        },
+    )
+
+    assert response.status_code == 200
+    assert captured_words == ["学校"]

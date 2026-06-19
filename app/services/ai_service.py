@@ -92,6 +92,12 @@ def _build_mock_sentences(language, target_word, allowed_words, count=2, custom_
             (f"Das Buch liegt auf dem Tisch.", "The book is on the table."),
             (f"Maria mag dieses Buch.", "Marie likes this book."),
         ]
+    elif normalize_for_match(language) == "chinese":
+        templates = [
+            (f"我喜欢{word or '词语'}。", "I like this word."),
+            (f"{word or '词语'}很重要。", "This word is important."),
+            (f"我在学习{word or '词语'}。", "I am studying this word."),
+        ]
     else:
         templates = [
             (f"I read a simple book.", "Je lis un livre simple."),

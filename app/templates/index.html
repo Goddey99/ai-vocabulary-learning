@@ -64,7 +64,14 @@
                     <input
                         type="text"
                         name="language"
-                        value="{{ (form_values|default({})).get('language', 'French') }}">
+                        list="language-options"
+                        value="{{ (form_values|default({})).get('language', config.DEFAULT_LANGUAGE if config is defined else 'French') }}">
+
+                    <datalist id="language-options">
+                        {% for language_name in supported_languages|default(('French', 'English', 'Spanish', 'German', 'Chinese')) %}
+                        <option value="{{ language_name }}"></option>
+                        {% endfor %}
+                    </datalist>
 
                 </label>
 
@@ -112,7 +119,7 @@
                         type="text"
                         name="custom_word"
                         value="{{ (form_values|default({})).get('custom_word', '') }}"
-                        placeholder="Example: school or livre">
+                        placeholder="Example: school, livre, or 学校">
 
                 </label>
 

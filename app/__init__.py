@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from flask import Flask
+from .config import Config
 from .routes import main
 
 
@@ -13,13 +14,14 @@ def create_app():
     def inject_form_values():
         return {
             "form_values": {
-                "language": "French",
+                "language": Config.DEFAULT_LANGUAGE,
                 "target_words": 10,
                 "sentences_per_word": 2,
                 "allowed_range": 50,
                 "image_style": "cartoon",
                 "custom_word": "",
-            }
+            },
+            "supported_languages": Config.SUPPORTED_LANGUAGES,
         }
 
     log_dir = Path(app.instance_path)

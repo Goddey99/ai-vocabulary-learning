@@ -2,7 +2,21 @@
 
 This project uses AI services to help learners memorize vocabulary when learning a new language.
 
-The system supports French, English, Spanish, and German, with French used as the primary demonstration language.
+The system supports English, French, Spanish, German, and Chinese.
+
+## Supported Languages
+
+- English
+- French
+- Spanish
+- German
+- Chinese
+
+Chinese support follows the same end-to-end flow as the other languages:
+- vocabulary loading from a language-specific CSV dataset
+- sentence generation in the selected language with English translation
+- audio generation through mapped language codes
+- image generation with language-aware context rules
 
 ## Core Idea
 

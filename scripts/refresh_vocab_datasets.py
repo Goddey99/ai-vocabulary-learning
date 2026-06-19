@@ -206,6 +206,32 @@ LANGUAGES = {
             "morgen": "tomorrow",
         },
     },
+    "Chinese": {
+        "code": "zh",
+        "filename": "chinese_frequency_words.csv",
+        "overrides": {
+            "我": "I",
+            "你": "you",
+            "他": "he",
+            "她": "she",
+            "是": "is/am/are",
+            "有": "have",
+            "家": "home/family",
+            "书": "book",
+            "学校": "school",
+            "水": "water",
+            "饭": "food/meal",
+            "朋友": "friend",
+            "老师": "teacher",
+            "学生": "student",
+            "车": "car",
+            "猫": "cat",
+            "狗": "dog",
+            "好": "good",
+            "大": "big",
+            "小": "small",
+        },
+    },
 }
 
 NON_WORD_RE = re.compile(r"^[^\wÀ-ÿ]+$", re.UNICODE)
