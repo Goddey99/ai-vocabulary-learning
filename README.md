@@ -160,3 +160,8 @@ See:
 docs/provider_comparison.md
 docs/implementation_plan.md
 ```
+
+## Project Report
+The complete academic project report for this AI-Based Vocabulary Memorization Tool is available here:
+
+[📄 ENGR 6971 Project Report](https://chatgpt.com/c/docs/ENGR_6971_Project_Report.pdf)
